@@ -11,7 +11,7 @@ LOG_FILE=$(echo $0 | cut -d "." -f1)
 TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOG_FILE_NAME="$LOGS_FOLDER/$LOG_FILE-$TIMESTAMP.log"
 
-echo "Script started executing at : $TIMESTAMP" &>>LOG_FILE_NAME
+echo "Script started executing at : $TIMESTAMP" &>> $LOG_FILE_NAME
 
 if [ $USERID -ne 0 ]
 then
@@ -30,16 +30,16 @@ VALIDATE () {
 
 }
 
-dnf module disable nodejs -y &>>LOG_FILE_NAME
+dnf module disable nodejs -y $LOG_FILE_NAME
 VALIDATE $? "Disabling default nodejs version"
 
-dnf module enable nodejs:20 -y &>>LOG_FILE_NAME
+dnf module enable nodejs:20 -y $LOG_FILE_NAME
 VALIDATE $? "Enabling the required nodejs version"
 
-dnf install nodejs -y &>>LOG_FILE_NAME 
+dnf install nodejs -y $LOG_FILE_NAME 
 VALIDATE $? "Installing nodejs"
 
-id expense &>>LOG_FILE_NAME
+id expense $LOG_FILE_NAME
 if [ $? -ne 0 ]
 then
     useradd expense
@@ -57,26 +57,26 @@ VALIDATE $? "Downloading the application"
 cd /app
 rm -rf *
 
-unzip /tmp/backend.zip &>>LOG_FILE_NAME
+unzip /tmp/backend.zip $LOG_FILE_NAME
 
-npm install &>>LOG_FILE_NAME
+npm install $LOG_FILE_NAME
 VALIDATE $? "Installing dependencies"
 
 cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
 
 #Prepare Mysql Schema
 
-dnf install mysql -y &>>LOG_FILE_NAME
+dnf install mysql -y $LOG_FILE_NAME
 VALIDATE $? "Installing mysql Client"
 
-mysql -h  -uroot mysql.gsdevops.online -pExpenseApp@1 < /app/schema/backend.sql &>>LOG_FILE_NAME
+mysql -h  -uroot mysql.gsdevops.online -pExpenseApp@1 < /app/schema/backend.sql $LOG_FILE_NAME
 VALIDATE $? "Loading Mysql Schema"
 
-systemctl daemon-reload &>>LOG_FILE_NAME
+systemctl daemon-reload $LOG_FILE_NAME
 VALIDATE $? "Daemon reload"
 
-systemctl enable backend &>>LOG_FILE_NAME
+systemctl enable backend $LOG_FILE_NAME
 VALIDATE $? "Enabling backend Service"
 
-systemctl restart backend &>>LOG_FILE_NAME
+systemctl restart backend $LOG_FILE_NAME
 VALIDATE $? "starting backend Service"
