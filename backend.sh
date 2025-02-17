@@ -62,7 +62,7 @@ unzip /tmp/backend.zip &>>LOG_FILE_NAME
 npm install &>>LOG_FILE_NAME
 VALIDATE $? "Installing dependencies"
 
-cp /home/ec2-user/expense-shell /etc/systemd/system/backend.service
+cp /home/ec2-user/expense-shell/bakend.service /etc/systemd/system/backend.service
 
 #Prepare Mysql Schema
 
