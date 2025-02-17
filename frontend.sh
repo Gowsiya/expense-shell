@@ -31,24 +31,28 @@ VALIDATE () {
 }
 
 dnf install nginx -y &>>$LOG_FILE_NAME
-VALIDATE $? "Installing Nginx"
+VALIDATE $? "Installing Nginx Server"
 
 systemctl enable nginx &>>$LOG_FILE_NAME
-VALIDATE $? "Enabling Nginx"
+VALIDATE $? "Enabling Nginx Server"
 
 systemctl start nginx &>>$LOG_FILE_NAME
-VALIDATE $? "Starting Nginx"
+VALIDATE $? "Starting Nginx Server"
 
 rm -rf /usr/share/nginx/html/*
-VALIDATE $? "Removing old content of web server"
+VALIDATE $? "Removing existing verson of code"
 
 curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip &>>$LOG_FILE_NAME
-VALIDATE $? "Download the frontend content"
+VALIDATE $? "Download the latest code"
 
 cd /usr/share/nginx/html
+VALIDATE $? "Moving to HTML Directory"
+
 unzip /tmp/frontend.zip &>>$LOG_FILE_NAME
+VALIDATE $? "Unzipping the frontend"
 
 cp /home/ec2-user/expense-shell/expense.conf /etc/nginx/default.d/expense.conf &>>$LOG_FILE_NAME
+VALIDATE $? "Copied expense config"
 
 systemctl restart nginx &>>$LOG_FILE_NAME
 VALIDATE $? "Started Nginx"
