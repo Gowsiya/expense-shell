@@ -39,5 +39,12 @@ VALIDATE $? "Enabling MySQL Server"
 systemctl start mysqld &>>$LOG_FILE_NAME
 VALIDATE $? "Starting MySQL Server"
 
-mysql_secure_installation --set-root-pass ExpenseApp@1
-VALIDATE $? "Setting root password"
+mysql -h mysql.gsdevops.online -u root -pExpenseApp@1 -e 'show databases' &>>LOG_FILE_NAME
+if [ $? -ne 0]
+then
+    echo "Mysql root password not setup" &>>LOG_FILE_NAME
+    mysql_secure_installation --set-root-pass ExpenseApp@1
+    VALIDATE $? "Setting root password"
+else
+    echo "Mysql root password alredy set $Y ... SKIPPING $N" &>>LOG_FILE_NAME
+fi
