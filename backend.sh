@@ -45,7 +45,7 @@ then
     useradd expense
     echo "Adding expense user"
 else
-    echo -e "User expense already ... $Y exists $N"
+    echo -e "User expense already exits ... $Y SKIPPING $N"
 fi
 
 mkdir -p /app
