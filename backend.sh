@@ -30,16 +30,16 @@ VALIDATE () {
 
 }
 
-dnf module disable nodejs -y
+dnf module disable nodejs -y &>>LOG_FILE_NAME
 VALIDATE $? "Disabling default nodejs version"
 
-dnf module enable nodejs:20 -y
+dnf module enable nodejs:20 -y &>>LOG_FILE_NAME
 VALIDATE $? "Enabling the required nodejs version"
 
-dnf install nodejs -y &>>LOG_FILE_NAME
+dnf install nodejs -y &>>LOG_FILE_NAME 
 VALIDATE $? "Installing nodejs"
 
-id expense
+id expense &>>LOG_FILE_NAME
 if [ $? -ne 0 ]
 then
     useradd expense
